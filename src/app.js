@@ -6,7 +6,7 @@ app.use(express.json());
 
 // Default route
 app.get('/', (req, res) => {
-    res.json({ message: "Welcome to Twitter API v1" });
+    res.json({ message: 'Welcome to Twitter API v1' });
 });
 
 export default app;
