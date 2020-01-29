@@ -4,6 +4,10 @@
   "description": "Simple twitter API clone",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon --exec babel-node src/index.js",
+    "build": "rm -rf dist && babel src --out-dir dist",
+    "prestart": "npm run build",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +19,17 @@
   "bugs": {
     "url": "https://github.com/Tijesunimi/twitter-api/issues"
   },
-  "homepage": "https://github.com/Tijesunimi/twitter-api#readme"
+  "homepage": "https://github.com/Tijesunimi/twitter-api#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.8.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "nodemon": "^2.0.2"
+  }
 }
