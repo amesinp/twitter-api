@@ -6,7 +6,7 @@ class TweetController {
     async postTweet (req, res) {
         const { body } = req.body;
 
-        const createdTweet = await this.tweetRepository.createTweet({ body });
+        const createdTweet = await this.tweetRepository.createTweet({ body, user: req.authUser._id });
         if (!createdTweet) {
             res.status(500).send({ message: 'An error occurred posting tweet. Please try again' });
         }

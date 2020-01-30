@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const tweetSchema = mongoose.Schema({
-    user_id: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
@@ -16,7 +16,6 @@ const tweetSchema = mongoose.Schema({
 }, {
     toJSON: {
         transform: function (doc, ret) {
-            delete ret.user_id;
             delete ret.__v;
         }
     }

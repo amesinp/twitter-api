@@ -2,7 +2,12 @@ import Tweet from '../models/tweet';
 
 class TweetRepository {
     async createTweet (tweet) {
-        return Tweet.create(tweet);
+        const result = await Tweet.create(tweet);
+        if (!result) {
+            return null;
+        }
+
+        return Tweet.findById(result._id).populate('user');
     }
 }
 
