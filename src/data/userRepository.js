@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import User from '../models/user';
 
 class UserRepository {
@@ -21,7 +22,7 @@ class UserRepository {
     }
 
     async getById (id) {
-        if (!id.match(/^[a-f\d]{24}$/i)) { // If the id is not a valid object id
+        if (!mongoose.isValidObjectId(id)) {
             return null;
         }
 

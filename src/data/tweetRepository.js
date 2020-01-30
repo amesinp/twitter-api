@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Tweet from '../models/tweet';
 import TweetReply from '../models/tweetReply';
 
@@ -12,7 +13,7 @@ class TweetRepository {
     }
 
     async getById (id) {
-        if (!id.match(/^[a-f\d]{24}$/i)) { // If the id is not a valid object id
+        if (!mongoose.isValidObjectId(id)) {
             return null;
         }
 
@@ -31,6 +32,15 @@ class TweetRepository {
                 path: 'user'
             }
         }).populate('user');
+    }
+
+    async getTweetsForUsersPaginated (userIdList, pageSize, currentPage) {
+        return Tweet.find()
+            .where('user').in(userIdList)
+            .sort('-created_at')
+            .skip((pageSize * currentPage) - pageSize)
+            .limit(pageSize)
+            .populate('user');
     }
 }
 
