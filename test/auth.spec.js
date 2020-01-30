@@ -143,7 +143,7 @@ describe('Authentication', () => {
                     'password': NEW_USER_PASSWORD
                 });
 
-            res.should.have.status(422);
+            res.should.have.status(400);
             res.type.should.equal('application/json');
             res.body.should.include.keys('errors');
             res.body.errors.should.be.a('array');
@@ -161,7 +161,7 @@ describe('Authentication', () => {
                     'password': NEW_USER_PASSWORD
                 });
 
-            res.should.have.status(422);
+            res.should.have.status(400);
             res.type.should.equal('application/json');
             res.body.should.include.keys('errors');
             res.body.errors.should.be.a('array');

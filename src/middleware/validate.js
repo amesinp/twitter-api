@@ -11,7 +11,7 @@ const validate = (req, res, next) => {
         [err.param]: err.msg
     }));
 
-    return res.status(422).json({
+    return res.status(400).json({
         errors: extractedErrors
     });
 };
