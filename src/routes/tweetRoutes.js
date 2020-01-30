@@ -4,6 +4,7 @@ import tweetController from '../controllers/tweetController';
 
 import authenticate from '../middleware/authenticate';
 import tweetValidationRules from '../middleware/tweetValidator';
+import tweetReplyValidationRules from '../middleware/tweetReplyValidator';
 import validate from '../middleware/validate';
 
 export default createController(tweetController)
@@ -11,4 +12,7 @@ export default createController(tweetController)
     .before(authenticate)
     .post('/', 'postTweet', {
         before: [tweetValidationRules(), validate]
+    })
+    .post('/:tweet/reply', 'replyTweet', {
+        before: [tweetReplyValidationRules(), validate]
     });

@@ -21,6 +21,10 @@ class UserRepository {
     }
 
     async getById (id) {
+        if (!id.match(/^[a-f\d]{24}$/i)) { // If the id is not a valid object id
+            return null;
+        }
+
         return User.findById(id);
     }
 
