@@ -2,8 +2,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 class AuthController {
-    constructor ({ userRepository }) {
+    constructor ({ userRepository, tokenSecret }) {
         this.userRepository = userRepository;
+        this.tokenSecret = tokenSecret;
     }
 
     async login (req, res) {
@@ -38,8 +39,7 @@ class AuthController {
     }
 
     _generateUserAuthToken (user) {
-        const secret = process.env.SECRET_KEY || 'API-0123456789';
-        return jwt.sign({ _id: user._id }, secret);
+        return jwt.sign({ _id: user._id }, this.tokenSecret);
     }
 }
 
