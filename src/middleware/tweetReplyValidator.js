@@ -7,7 +7,6 @@ const validationRules = () => {
 
         param('tweet')
             .custom((value, { req }) => {
-                console.log(`Tweet: ${value}`);
                 const tweetRepository = req.container.cradle.tweetRepository; // Get DI tweet repository
                 return tweetRepository.getById(value).then(result => {
                     if (!result) {

@@ -26,7 +26,12 @@ class DummyUserRepository {
     }
 
     async getById (id) {
-        return this.users.find(u => u._id === id);
+        const convertedId = parseInt(id);
+        if (isNaN(convertedId)) {
+            return null;
+        }
+
+        return this.users.find(u => u._id === convertedId);
     }
 
     async createUser (user) {

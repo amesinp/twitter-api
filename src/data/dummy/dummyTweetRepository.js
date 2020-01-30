@@ -1,6 +1,12 @@
 class DummyTweetRepository {
     constructor () {
-        this.tweets = [];
+        this.tweets = [
+            {
+                _id: 1,
+                body: 'Hello world',
+                user: 1
+            }
+        ];
         this.users = [
             {
                 _id: 1,
@@ -9,6 +15,7 @@ class DummyTweetRepository {
                 username: 'johndoe'
             }
         ];
+        this.tweetReplies = [];
     }
 
     async createTweet (tweet) {
@@ -18,9 +25,36 @@ class DummyTweetRepository {
         }
 
         tweet._id = id;
-        tweet.user = this.users.find(u => u._id === tweet.user);
         this.tweets.push(tweet);
+
+        // populate
+        tweet.user = this.users.find(u => u._id === tweet.user);
         return tweet;
+    }
+
+    async getById (id) {
+        const convertedId = parseInt(id);
+        if (isNaN(convertedId)) {
+            return null;
+        }
+
+        return this.tweets.find(t => t._id === convertedId);
+    }
+
+    async replyToTweet (reply) {
+        let id = 1;
+        if (this.tweetReplies.length > 0) {
+            id = parseInt(this.tweetReplies[this.tweetReplies.length - 1]._id) + 1;
+        }
+
+        reply._id = id;
+        this.tweetReplies.push(reply);
+
+        // populate
+        reply.tweet = await this.getById(reply.tweet);
+        reply.tweet.user = this.users.find(u => u._id === reply.tweet.user);
+        reply.user = this.users.find(u => u._id === reply.user);
+        return reply;
     }
 }
 
