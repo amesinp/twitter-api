@@ -2,7 +2,7 @@ class DummyUserRepository {
     constructor () {
         this.users = [
             {
-                _id: '1',
+                _id: 1,
                 name: 'John Doe',
                 email: 'johndoe@example.com',
                 username: 'johndoe',
