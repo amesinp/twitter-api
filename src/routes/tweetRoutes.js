@@ -10,6 +10,7 @@ import validate from '../middleware/validate';
 export default createController(tweetController)
     .prefix('/api/tweets')
     .before(authenticate)
+    .get('/', 'getTweetsPaginated')
     .post('/', 'postTweet', {
         before: [tweetValidationRules(), validate]
     })

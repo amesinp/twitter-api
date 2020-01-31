@@ -45,7 +45,45 @@ class TweetRepository {
             .populate('user');
 
         return {
-            tweets,
+            data: tweets,
+            count
+        };
+    }
+
+    async getTweetsPaginated (searchParams, sortParam, sortType, pageSize, currentPage) {
+        const filter = {};
+
+        if (sortType === 'desc') {
+            sortParam = '-' + sortParam;
+        }
+
+        // Use mongo index search to search tweet body
+        if (searchParams.search) {
+            filter.$text = {
+                $search: searchParams.search
+            };
+        }
+
+        if (searchParams.fromDate || searchParams.toDate) {
+            filter.created_at = {}; // Intialize created at first to prevent reference error
+            if (searchParams.fromDate) {
+                filter.created_at.$gte = searchParams.fromDate;
+            }
+            if (searchParams.toDate) {
+                filter.created_at.$lte = searchParams.toDate;
+            }
+        }
+
+        var count = await Tweet.find(filter).countDocuments();
+
+        var tweets = await Tweet.find(filter)
+            .sort(sortParam)
+            .skip((pageSize * currentPage) - pageSize)
+            .limit(pageSize)
+            .populate('user');
+
+        return {
+            data: tweets,
             count
         };
     }

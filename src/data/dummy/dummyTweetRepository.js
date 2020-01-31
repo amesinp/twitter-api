@@ -113,7 +113,7 @@ class DummyTweetRepository {
 
         return {
             count: filteredTweets.length,
-            tweets: paginatedTweets
+            data: paginatedTweets
         };
     }
 }

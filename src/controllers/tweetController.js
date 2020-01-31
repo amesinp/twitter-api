@@ -1,3 +1,5 @@
+import { getPaginationAndSortParams, getPaginatedResult } from '../helpers/paginationHelpers';
+
 class TweetController {
     constructor ({ tweetRepository }) {
         this.tweetRepository = tweetRepository;
@@ -24,6 +26,22 @@ class TweetController {
         }
 
         res.status(201).send(createdReply);
+    }
+
+    async getTweetsPaginated (req, res) {
+        const pageParams = getPaginationAndSortParams(req.query);
+        
+        const result = await this.tweetRepository.getTweetsPaginated({
+            search: req.query.search,
+            fromDate: req.query.from_date,
+            toDate: req.query.to_date
+        }, pageParams.sort, pageParams.sortType, pageParams.size, pageParams.page);
+
+        // Get full url from request
+        const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+
+        const finalResult = getPaginatedResult(result, fullUrl, pageParams);
+        res.status(200).send(finalResult);
     }
 }
 

@@ -7,7 +7,8 @@ const tweetSchema = mongoose.Schema({
     },
     body: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     created_at: {
         type: Date,
@@ -19,6 +20,9 @@ const tweetSchema = mongoose.Schema({
             delete ret.__v;
         }
     }
+});
+tweetSchema.index({
+    body: 'text'
 });
 
 export default mongoose.model('Tweet', tweetSchema);
