@@ -14,6 +14,20 @@ class DummyUserRepository {
                 email: 'janedoe@example.com',
                 username: 'janedoe',
                 password: '$2b$08$bQPN9kxBgEV4SY.Gw7SP6eOWwGxOo6bx80g9KBHsTJLhrn8I0mklu' // hash equivalent of "password"
+            },
+            {
+                _id: 3,
+                name: 'John Smith',
+                email: 'johnsmith@example.com',
+                username: 'johnsmith',
+                password: '$2b$08$bQPN9kxBgEV4SY.Gw7SP6eOWwGxOo6bx80g9KBHsTJLhrn8I0mklu' // hash equivalent of "password"
+            },
+            {
+                _id: 4,
+                name: 'Jane Smith',
+                email: 'janesmith@example.com',
+                username: 'janesmith',
+                password: '$2b$08$bQPN9kxBgEV4SY.Gw7SP6eOWwGxOo6bx80g9KBHsTJLhrn8I0mklu' // hash equivalent of "password"
             }
         ];
     }
