@@ -16,11 +16,9 @@ describe('Follow User', () => {
             const token = jwt.sign({ _id: 1 }, TEST_SECRET);
 
             const res = await chai.request(app)
-                .post('/api/follows')
+                .post('/api/users/2/follow')
                 .set('authorization', token)
-                .send({
-                    'user': 2
-                });
+                .send();
 
             res.should.have.status(200);
             res.type.should.equal('application/json');
@@ -28,11 +26,9 @@ describe('Follow User', () => {
 
         it ('it should not allow follow (with INVALID token)', async () => {
             const res = await chai.request(app)
-                .post('/api/follows')
+                .post('/api/users/2/follow')
                 .set('authorization', 'invalidtoken')
-                .send({
-                    'user': 2
-                });
+                .send();
 
             res.should.have.status(401);
         });
@@ -41,11 +37,9 @@ describe('Follow User', () => {
             const token = jwt.sign({ _id: 1 }, TEST_SECRET);
 
             const res = await chai.request(app)
-                .post('/api/follows')
+                .post('/api/users/1/follow')
                 .set('authorization', token)
-                .send({
-                    'user': 1
-                });
+                .send();
 
             res.should.have.status(400);
             res.type.should.equal('application/json');
@@ -59,11 +53,9 @@ describe('Follow User', () => {
             const token = jwt.sign({ _id: 1 }, TEST_SECRET);
 
             const res = await chai.request(app)
-                .post('/api/follows')
+                .post('/api/users/invaliduser/follow')
                 .set('authorization', token)
-                .send({
-                    'user': 'invaliduser'
-                });
+                .send();
 
             res.should.have.status(400);
             res.type.should.equal('application/json');

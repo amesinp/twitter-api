@@ -1,8 +1,9 @@
 import { getPaginationAndSortParams, getPaginatedResult } from '../helpers/paginationHelpers';
 
 class UserController {
-    constructor ({ userRepository }) {
+    constructor ({ userRepository, followMapRepository }) {
         this.userRepository = userRepository;
+        this.followMapRepository = followMapRepository;
     }
 
     async getUsersPaginated (req, res) {
@@ -21,6 +22,25 @@ class UserController {
 
         const finalResult = getPaginatedResult(result, fullUrl, pageParams);
         res.status(200).send(finalResult);
+    }
+
+    async followUser (req, res) {
+        const { user } = req.params;
+        const map = {
+            followed: user,
+            follower: req.authUser._id
+        };
+
+        if (await this.followMapRepository.mappingExists(map)) {
+            return res.status(409).send({ message: 'You are already following this user' });
+        }
+
+        const followMap = this.followMapRepository.createMapping(map);
+        if (!followMap) {
+            return res.status(500).send({ message: 'An error occurred. Please try again' });
+        }
+
+        return res.status(200).send({ message: 'Followed successfully' });
     }
 }
 

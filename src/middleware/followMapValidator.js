@@ -1,8 +1,8 @@
-import { body } from 'express-validator';
+import { param } from 'express-validator';
 
 const validationRules = () => {
     return [
-        body('user')
+        param('user')
             .custom((value, { req }) => {
                 if (!value) {
                     return Promise.reject(new Error('User to follow is required'));
