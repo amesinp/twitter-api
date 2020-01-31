@@ -8,7 +8,12 @@ class AuthController {
     }
 
     async login (req, res) {
-        const user = await this.userRepository.getByUsernameOrEmail(req.body);
+        const { username, password } = req.body;
+
+        const user = await this.userRepository.getByUsernameOrEmail({
+            username,
+            password
+        });
         if (user == null || !await this._verifyPassword(req.body.password, user.password)) {
             return res.status(401).send({ message: 'Invalid username or password' });
         }
@@ -18,7 +23,13 @@ class AuthController {
     }
 
     async register (req, res) {
-        const user = req.body;
+        const { name, username, email, password } = req.body;
+        const user = {
+            name,
+            username,
+            email,
+            password
+        };
 
         user.password = await this._getHashedPassword(user.password);
         const createdUser = await this.userRepository.createUser(user);

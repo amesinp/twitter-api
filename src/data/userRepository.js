@@ -5,7 +5,7 @@ class UserRepository {
     async getByUsernameOrEmail (user) {
         return User.findOne({
             $or: [
-                { email: user.email },
+                { email: user.username },
                 { username: user.username }
             ]
         });

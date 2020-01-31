@@ -34,7 +34,7 @@ describe('Authentication', () => {
             const res = await chai.request(app)
                 .post('/api/login')
                 .send({
-                    'email': EXISTING_USER_EMAIL,
+                    'username': EXISTING_USER_EMAIL,
                     'password': EXISTING_USER_PASSWORD
                 });
 
@@ -83,7 +83,7 @@ describe('Authentication', () => {
             const res = await chai.request(app)
                 .post('/api/login')
                 .send({
-                    'email': EXISTING_USER_EMAIL,
+                    'username': EXISTING_USER_EMAIL,
                     'password': 'wrongpassword'
                 });
 
@@ -95,7 +95,7 @@ describe('Authentication', () => {
             const res = await chai.request(app)
                 .post('/api/login')
                 .send({
-                    'email': 'wrongemail',
+                    'username': 'wrongemail',
                     'password': EXISTING_USER_PASSWORD
                 });
 
@@ -107,7 +107,7 @@ describe('Authentication', () => {
             const res = await chai.request(app)
                 .post('/api/login')
                 .send({
-                    'email': 'wrongemail',
+                    'username': 'wrongemail',
                     'password': 'wrongpassword'
                 });
 
@@ -188,7 +188,7 @@ describe('Authentication', () => {
             const res = await chai.request(app)
                 .post('/api/login')
                 .send({
-                    'email': NEW_USER_EMAIL,
+                    'username': NEW_USER_EMAIL,
                     'password': NEW_USER_PASSWORD
                 });
 

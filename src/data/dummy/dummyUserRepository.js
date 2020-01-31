@@ -33,7 +33,7 @@ class DummyUserRepository {
     }
 
     async getByUsernameOrEmail (user) {
-        return this.users.find(u => u.email === user.email || u.username === user.username);
+        return this.users.find(u => u.email === user.username || u.username === user.username);
     }
 
     async checkUsernameExists (username) {
