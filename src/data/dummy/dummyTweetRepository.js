@@ -111,7 +111,10 @@ class DummyTweetRepository {
             }
         }
 
-        return paginatedTweets;
+        return {
+            count: filteredTweets.length,
+            tweets: paginatedTweets
+        };
     }
 }
 

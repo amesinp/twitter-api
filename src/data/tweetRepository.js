@@ -35,12 +35,19 @@ class TweetRepository {
     }
 
     async getTweetsForUsersPaginated (userIdList, pageSize, currentPage) {
-        return Tweet.find()
+        var count = await Tweet.where('user').in(userIdList).countDocuments();
+
+        var tweets = await Tweet.find()
             .where('user').in(userIdList)
             .sort('-created_at')
             .skip((pageSize * currentPage) - pageSize)
             .limit(pageSize)
             .populate('user');
+
+        return {
+            tweets,
+            count
+        };
     }
 }
 

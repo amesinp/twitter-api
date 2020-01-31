@@ -1,3 +1,5 @@
+import url from 'url';
+
 class TimelineController {
     constructor ({ tweetRepository, followMapRepository }) {
         this.tweetRepository = tweetRepository;
@@ -21,8 +23,34 @@ class TimelineController {
             return res.status(400).send({ message: 'Follow users to populate timeline' });
         }
 
-        const tweets = await this.tweetRepository.getTweetsForUsersPaginated(userFollows, size, page);
-        return res.status(200).send(tweets);
+        const result = await this.tweetRepository.getTweetsForUsersPaginated(userFollows, size, page);
+        const lastRecord = page * size;
+
+        // Get full url from request
+        const pageURL = new url.URL(req.protocol + '://' + req.get('host') + req.originalUrl);
+
+        const finalResult = {
+            totalCount: result.count,
+            tweets: result.tweets,
+            currentPage: page,
+            pageSize: size
+        };
+        if (lastRecord < result.count) {
+            finalResult.nextPage = page + 1;
+            finalResult.nextPageUrl = this._modifyUrlSearchParams(pageURL, finalResult.nextPage, size);
+        }
+        if (page !== 1) {
+            finalResult.previousPage = page - 1;
+            finalResult.previousPageUrl = this._modifyUrlSearchParams(pageURL, finalResult.previousPage, size);
+        }
+
+        return res.status(200).send(finalResult);
+    }
+
+    _modifyUrlSearchParams (pageUrl, page, size) {
+        pageUrl.searchParams.set('page', page);
+        pageUrl.searchParams.set('size', size);
+        return pageUrl.href;
     }
 }
 

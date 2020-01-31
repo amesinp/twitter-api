@@ -21,8 +21,9 @@ describe('Timeline', () => {
 
             res.should.have.status(200);
             res.type.should.equal('application/json');
-            res.body.should.be.a('array');
-            res.body.length.should.not.be.eql(0);
+            res.body.should.include.keys('tweets');
+            res.body.tweets.should.be.a('array');
+            res.body.tweets.length.should.not.be.eql(0);
         });
 
         it ('it should not retrieve timeline (with INVALID token)', async () => {
@@ -43,8 +44,9 @@ describe('Timeline', () => {
 
             res.should.have.status(200);
             res.type.should.equal('application/json');
-            res.body.should.be.a('array');
-            res.body.length.should.equal(1);
+            res.body.should.include.keys('tweets');
+            res.body.tweets.should.be.a('array');
+            res.body.tweets.length.should.equal(1);
         });
 
         it ('it should not return tweets by a user that the auth user is not following', async () => {
@@ -57,10 +59,11 @@ describe('Timeline', () => {
 
             res.should.have.status(200);
             res.type.should.equal('application/json');
-            res.body.should.be.a('array');
+            res.body.should.include.keys('tweets');
+            res.body.tweets.should.be.a('array');
 
             var userIds = [];
-            res.body.forEach((tweet) => {
+            res.body.tweets.forEach((tweet) => {
                 if (!userIds.includes(tweet.user._id))
                     userIds.push(tweet.user._id);
             });
