@@ -1,25 +1,31 @@
+import moment from 'moment';
+
 class DummyTweetRepository {
     constructor () {
         this.tweets = [
             {
                 _id: 1,
                 body: 'Hello world',
-                user: 1
+                user: 1,
+                created_at: '2020-01-29T23:36:58.963Z'
             },
             {
                 _id: 2,
                 body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud',
-                user: 2
+                user: 2,
+                created_at: '2020-01-29T13:36:58.963Z'
             },
             {
                 _id: 3,
                 body: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis',
-                user: 1
+                user: 1,
+                created_at: '2020-01-30T23:36:58.963Z'
             },
             {
                 _id: 4,
                 body: 'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?',
-                user: 2
+                user: 2,
+                created_at: '2020-01-31T23:36:58.963Z'
             }
         ];
         this.users = [
@@ -93,27 +99,77 @@ class DummyTweetRepository {
     async getTweetsForUsersPaginated (userIdList, pageSize, currentPage) {
         const tweets = JSON.parse(JSON.stringify(this.tweets)); // So that changes don't affect original array
         const filteredTweets = tweets.filter(t => userIdList.includes(t.user));
-        const paginatedTweets = [];
+        let paginatedTweets = [];
 
         if (filteredTweets.length > 0) {
             filteredTweets.sort((a, b) => parseInt(b._id) - parseInt(a._id));
             
-            const offset = (pageSize * currentPage) - pageSize;
-            if (offset < filteredTweets.length) {
-                let lastIndex = offset + pageSize;
-                lastIndex = lastIndex > filteredTweets.length ? filteredTweets.length : lastIndex;
-                
-                for (let i = offset; i < lastIndex; i++) {
-                    const tweet = filteredTweets[i];
-                    tweet.user = this.users.find(u => u._id === tweet.user);
-                    paginatedTweets.push(tweet);
-                }
-            }
+            paginatedTweets = this._getTweetsForPage(filteredTweets, pageSize, currentPage);
         }
 
         return {
             count: filteredTweets.length,
             data: paginatedTweets
+        };
+    }
+
+    _getTweetsForPage (filteredTweets, pageSize, currentPage) {
+        const paginatedTweets = [];
+        const offset = (pageSize * currentPage) - pageSize;
+
+        if (offset < filteredTweets.length) {
+            let lastIndex = offset + pageSize;
+            lastIndex = lastIndex > filteredTweets.length ? filteredTweets.length : lastIndex;
+            
+            for (let i = offset; i < lastIndex; i++) {
+                const tweet = filteredTweets[i];
+                tweet.user = this.users.find(u => u._id === tweet.user);
+                paginatedTweets.push(tweet);
+            }
+        }
+
+        return paginatedTweets;
+    }
+
+    async getTweetsPaginated (searchParams, sortParam, sortType, pageSize, currentPage) {
+        let filteredTweets = JSON.parse(JSON.stringify(this.tweets)); // So that changes don't affect original array
+        let paginatedTweets = [];
+
+        if (searchParams.search) {
+            filteredTweets = filteredTweets.filter(t => t.body.indexOf(searchParams.search) > -1);
+        }
+
+        if (searchParams.fromDate || searchParams.toDate) {
+            if (searchParams.fromDate) {
+                const parsedFromDate = moment(searchParams.fromDate);
+                filteredTweets = filteredTweets.filter(t => moment(t.created_at) >= parsedFromDate);
+            }
+            if (searchParams.toDate) {
+                const parsedToDate = moment(searchParams.toDate);
+                filteredTweets = filteredTweets.filter(t => moment(t.created_at) <= parsedToDate);
+            }
+        }
+
+        if (filteredTweets.length > 0) {
+            if (sortParam === 'created_at') {
+                const isDesc = sortType === 'desc';
+                filteredTweets.sort((a, b) => {
+                    const aDate = moment(a);
+                    const bDate = moment(b);
+                    if (isDesc) {
+                        return bDate > aDate ? 1 : bDate < aDate ? -1 : 0;
+                    } else {
+                        return aDate > bDate ? 1 : aDate < bDate ? -1 : 0;
+                    }
+                });
+            }
+
+            paginatedTweets = this._getTweetsForPage(filteredTweets, pageSize, currentPage);
+        }
+
+        return {
+            data: paginatedTweets,
+            count: filteredTweets.length
         };
     }
 }

@@ -141,4 +141,62 @@ describe('Tweets', () => {
             res.body.errors.should.contain.a.thing.with.property('body');
         });
     });
+
+    describe('/GET tweets', () => {
+        it ('it should return tweets (with VALID token)', async () => {
+            const token = jwt.sign({ _id: 1 }, TEST_SECRET);
+
+            const res = await chai.request(app)
+                .get('/api/tweets')
+                .set('authorization', token);
+
+            res.should.have.status(200);
+            res.type.should.equal('application/json');
+            res.body.should.be.a('object');
+            res.body.should.include.keys('data');
+        });
+
+        it ('it should not return tweets (with INVALID token)', async () => {
+            const res = await chai.request(app)
+                .get('/api/tweets')
+                .set('authorization', 'invalidtoken')
+                .send();
+
+            res.should.have.status(401);
+        });
+
+        it ('it should not return tweets greater than specified size', async () => {
+            const token = jwt.sign({ _id: 3 }, TEST_SECRET);
+
+            const res = await chai.request(app)
+                .get('/api/tweets')
+                .query({ size: 2 })
+                .set('authorization', token);
+
+            res.should.have.status(200);
+            res.type.should.equal('application/json');
+            res.body.should.include.keys('data');
+            res.body.data.should.be.a('array');
+            res.body.data.length.should.equal(2);
+        });
+
+        it ('it should not returns tweets with invalid query params', async () => {
+            const token = jwt.sign({ _id: 1 }, TEST_SECRET);
+
+            const res = await chai.request(app)
+                .get('/api/tweets')
+                .query({ size: 'invalidsize', page: 'invalidpage', from_date: 'invaliddate', to_date: 'invaliddate' })
+                .set('authorization', token);
+
+            res.should.have.status(400);
+            res.type.should.equal('application/json');
+            res.body.should.include.keys('errors');
+            res.body.errors.should.be.a('array');
+            res.body.errors.length.should.not.be.eql(0);
+            res.body.errors.should.contain.a.thing.with.property('size');
+            res.body.errors.should.contain.a.thing.with.property('page');
+            res.body.errors.should.contain.a.thing.with.property('from_date');
+            res.body.errors.should.contain.a.thing.with.property('to_date');
+        });
+    });
 });

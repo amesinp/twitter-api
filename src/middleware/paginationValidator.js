@@ -2,7 +2,7 @@ import { query } from 'express-validator';
 import moment from 'moment';
 
 const isValidDate = (value) => {
-    const date = moment(value);
+    const date = moment(value, 'YYY-MM-DD H:m');
     return date.isValid();
 };
 
