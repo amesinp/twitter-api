@@ -1,9 +1,10 @@
 import { getPaginationAndSortParams, getPaginatedResult } from '../helpers/paginationHelpers';
 
 class TimelineController {
-    constructor ({ tweetRepository, followMapRepository }) {
+    constructor ({ tweetRepository, followMapRepository, tweetEventHandler }) {
         this.tweetRepository = tweetRepository;
         this.followMapRepository = followMapRepository;
+        this.tweetEventHandler = tweetEventHandler;
     }
 
     async retrieveTimelinePaginated (req, res) {
@@ -21,6 +22,19 @@ class TimelineController {
 
         const finalResult = getPaginatedResult(result, fullUrl, params);
         return res.status(200).send(finalResult);
+    }
+
+    async getTimelineRealtime (req, res) {
+        // Start stream
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            Connection: 'keep-alive'
+        });
+
+        this.tweetEventHandler.registerClient(req.authUser._id, res);
+
+        res.write('data: Subscribed \n\n');
     }
 }
 

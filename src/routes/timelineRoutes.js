@@ -11,4 +11,5 @@ export default createController(timelineController)
     .before(authenticate)
     .get('/', 'retrieveTimelinePaginated', {
         before: [paginationValidationRules(), validate]
-    });
+    })
+    .get('/stream', 'getTimelineRealtime');

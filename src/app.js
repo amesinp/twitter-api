@@ -1,11 +1,13 @@
 import express from 'express';
 import { loadControllers, scopePerRequest } from 'awilix-express';
+import cors from 'cors';
 
 import container from './di-container';
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 // Dependency injection setup
 app.use(scopePerRequest(container));

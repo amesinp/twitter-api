@@ -15,6 +15,45 @@ For Authenticated users
 - Search tweets
 - Search users
 
+# Additional Features
+
+This API also supports realtime timeline update. 
+
+Below is a sample JavaScript implementation for retrieving user's timeline realtime.
+
+```
+if (window.EventSource) {
+    const source = new EventSource('http://localhost:5000/api/timeline/stream?token=eyJhbGciOiJIUzI'); // Pass in auth token as a query string
+
+    source.addEventListener('message', function(e) {
+        if (e.data.trim() !== 'Subscribed') {
+            const tweet = JSON.parse(e.data);
+            // Update user timeline with new tweet
+        }
+    }, false)
+
+    source.addEventListener('open', function(e) {
+        // Connected successfully
+    }, false)
+
+    source.addEventListener('error', function(e) {
+        if (e.eventPhase == EventSource.CLOSED) {
+            source.close()
+        }
+    
+        if (e.target.readyState == EventSource.CLOSED) {
+            // Stream disconnected
+        }
+        else if (e.target.readyState == EventSource.CONNECTING) {
+            // Stream reconnecting
+        }
+    }, false)
+} else {
+    console.log("Browser not supported")
+}
+```
+
+
 # Code Structure
 
 ```
@@ -23,6 +62,7 @@ twitter-api
 │    │─── controllers
 │    │─── data (DAL)
 │    │    └─── dummy (for unit tests)
+│    │─── events (Server sent events)
 │    │─── helpers
 │    │─── middleware
 │    │─── models

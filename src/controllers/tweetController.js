@@ -1,8 +1,10 @@
 import { getPaginationAndSortParams, getPaginatedResult } from '../helpers/paginationHelpers';
 
 class TweetController {
-    constructor ({ tweetRepository }) {
+    constructor ({ tweetRepository, followMapRepository, tweetEventHandler }) {
         this.tweetRepository = tweetRepository;
+        this.followMapRepository = followMapRepository;
+        this.tweetEventHandler = tweetEventHandler;
     }
 
     async postTweet (req, res) {
@@ -12,8 +14,18 @@ class TweetController {
         if (!createdTweet) {
             res.status(500).send({ message: 'An error occurred posting tweet. Please try again' });
         }
-
+        
+        // Send response to user first
         res.status(201).send(createdTweet);
+
+        // Send tweet to subscribers
+        await this._sendTweetToSubscribers(req.authUser._id, createdTweet);
+    }
+
+    async _sendTweetToSubscribers (userId, tweet) {
+        const userFollowers = await this.followMapRepository.getUserFollowers(userId);
+
+        this.tweetEventHandler.sendToClients(userFollowers, tweet);
     }
 
     async replyTweet (req, res) {

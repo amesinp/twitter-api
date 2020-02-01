@@ -13,6 +13,11 @@ class FollowMapRepository {
         const mappings = await FollowMap.find({ follower: userId });
         return mappings.map(m => m.followed);
     }
+
+    async getUserFollowers (userId) {
+        const mappings = await FollowMap.find({ followed: userId });
+        return mappings.map(m => m.follower);
+    }
 }
 
 export default FollowMapRepository;

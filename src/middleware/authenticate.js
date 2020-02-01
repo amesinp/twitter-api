@@ -2,6 +2,13 @@ import jwt from 'jsonwebtoken';
 
 const checkToken = (req, res, next) => {
     let token = req.headers.authorization || req.headers['x-access-token']; // Get token from header
+    
+    // Allow token to be gotten from query string for stream APIs
+    // THis is because EventSource doesn't currently support headers
+    if (req.path.endsWith('/stream')) {
+        token = req.query.token;
+    }
+
     if (!token) {
         return res.status(401).send();
     }
