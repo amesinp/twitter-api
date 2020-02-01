@@ -21,7 +21,7 @@ This API also supports realtime timeline update.
 
 Below is a sample JavaScript implementation for retrieving user's timeline realtime.
 
-```
+```javascript
 if (window.EventSource) {
     const source = new EventSource('http://localhost:5000/api/timeline/stream?token=eyJhbGciOiJIUzI'); // Pass in auth token as a query string
 
