@@ -185,7 +185,14 @@ describe('Tweets', () => {
 
             const res = await chai.request(app)
                 .get('/api/tweets')
-                .query({ size: 'invalidsize', page: 'invalidpage', from_date: 'invaliddate', to_date: 'invaliddate' })
+                .query({ 
+                    size: 'invalidsize', 
+                    page: 'invalidpage', 
+                    from_date: 'invaliddate', 
+                    to_date: 'invaliddate',
+                    sort: 'invalidsort',
+                    sort_type: 'invalidsorttype',
+                })
                 .set('authorization', token);
 
             res.should.have.status(400);
@@ -197,6 +204,8 @@ describe('Tweets', () => {
             res.body.errors.should.contain.a.thing.with.property('page');
             res.body.errors.should.contain.a.thing.with.property('from_date');
             res.body.errors.should.contain.a.thing.with.property('to_date');
+            res.body.errors.should.contain.a.thing.with.property('sort');
+            res.body.errors.should.contain.a.thing.with.property('sort_type');
         });
     });
 });
